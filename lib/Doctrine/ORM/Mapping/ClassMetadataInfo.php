@@ -695,9 +695,6 @@ class ClassMetadataInfo implements ClassMetadata
      */
     public function getSingleIdReflectionProperty()
     {
-        if ($this->isIdentifierComposite) {
-            throw new BadMethodCallException("Class " . $this->name . " has a composite identifier.");
-        }
         return $this->reflFields[$this->identifier[0]];
     }
 
@@ -1771,9 +1768,6 @@ class ClassMetadataInfo implements ClassMetadata
      */
     public function getSingleIdentifierFieldName()
     {
-        if ($this->isIdentifierComposite) {
-            throw MappingException::singleIdNotAllowedOnCompositePrimaryKey($this->name);
-        }
         return $this->identifier[0];
     }
 

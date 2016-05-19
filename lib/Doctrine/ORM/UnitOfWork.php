@@ -2930,10 +2930,6 @@ class UnitOfWork implements PropertyChangedListener
     {
         $class = $this->em->getClassMetadata(get_class($entity));
 
-        if ($class->isIdentifierComposite) {
-            throw ORMInvalidArgumentException::invalidCompositeIdentifier();
-        }
-
         $values = $this->isInIdentityMap($entity)
             ? $this->getEntityIdentifier($entity)
             : $class->getIdentifierValues($entity);
