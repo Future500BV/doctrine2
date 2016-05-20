@@ -1459,11 +1459,11 @@ class ClassMetadataInfo implements ClassMetadata
             }
 
             if ( ! in_array($mapping['fieldName'], $this->identifier)) {
-                if (isset($mapping['joinColumns']) && count($mapping['joinColumns']) >= 2) {
-                    throw MappingException::cannotMapCompositePrimaryKeyEntitiesAsForeignId(
-                        $mapping['targetEntity'], $this->name, $mapping['fieldName']
-                    );
-                }
+//                if (isset($mapping['joinColumns']) && count($mapping['joinColumns']) >= 2) {
+//                    throw MappingException::cannotMapCompositePrimaryKeyEntitiesAsForeignId(
+//                        $mapping['targetEntity'], $this->name, $mapping['fieldName']
+//                    );
+//                }
 
                 $this->identifier[] = $mapping['fieldName'];
                 $this->containsForeignIdentifier = true;
