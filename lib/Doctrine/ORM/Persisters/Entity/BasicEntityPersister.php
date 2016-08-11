@@ -432,21 +432,47 @@ class BasicEntityPersister implements EntityPersister
                 continue;
             }
 
-            $params[]       = $identifier[$idField];
-            $where[]        = $this->class->associationMappings[$idField]['joinColumns'][0]['name'];
-            $targetMapping  = $this->em->getClassMetadata($this->class->associationMappings[$idField]['targetEntity']);
 
-            switch (true) {
-                case (isset($targetMapping->fieldMappings[$targetMapping->identifier[0]])):
-                    $types[] = $targetMapping->fieldMappings[$targetMapping->identifier[0]]['type'];
-                    break;
+            if (1 < ($columnCount = count($this->class->associationMappings[$idField]['joinColumns']))) {
+                $values = explode(' ', $identifier[$idField]);
+                if (count($values) <> $columnCount) {
+                   throw new \Exception('Value and column count mismatch!');
+                }
+                $targetMapping = $this->em->getClassMetadata($this->class->associationMappings[$idField]['targetEntity']);
+                for($i = 0; $i < $columnCount; $i++) {
+                    $params[] = $values[$i];
+                    $where[] = $this->class->associationMappings[$idField]['joinColumns'][$i]['name'];
 
-                case (isset($targetMapping->associationMappings[$targetMapping->identifier[0]])):
-                    $types[] = $targetMapping->associationMappings[$targetMapping->identifier[0]]['type'];
-                    break;
+                    switch (true) {
+                        case (isset($targetMapping->fieldMappings[$targetMapping->identifier[$i]])):
+                            $types[] = $targetMapping->fieldMappings[$targetMapping->identifier[$i]]['type'];
+                            break;
 
-                default:
-                    throw ORMException::unrecognizedField($targetMapping->identifier[0]);
+                        case (isset($targetMapping->associationMappings[$targetMapping->identifier[$i]])):
+                            $types[] = $targetMapping->associationMappings[$targetMapping->identifier[$i]]['type'];
+                            break;
+
+                        default:
+                            throw ORMException::unrecognizedField($targetMapping->identifier[$i]);
+                    }
+                }
+            } else {
+                $params[] = $identifier[$idField];
+                $where[] = $this->class->associationMappings[$idField]['joinColumns'][0]['name'];
+                $targetMapping = $this->em->getClassMetadata($this->class->associationMappings[$idField]['targetEntity']);
+
+                switch (true) {
+                    case (isset($targetMapping->fieldMappings[$targetMapping->identifier[0]])):
+                        $types[] = $targetMapping->fieldMappings[$targetMapping->identifier[0]]['type'];
+                        break;
+
+                    case (isset($targetMapping->associationMappings[$targetMapping->identifier[0]])):
+                        $types[] = $targetMapping->associationMappings[$targetMapping->identifier[0]]['type'];
+                        break;
+
+                    default:
+                        throw ORMException::unrecognizedField($targetMapping->identifier[0]);
+                }
             }
 
         }
